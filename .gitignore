@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+out/
+# reference art and calibration are per-machine; keep the folder only
+refs/*/*
+!refs/*/.gitkeep

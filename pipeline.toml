@@ -1,0 +1,24 @@
+# Global settings. Per-character settings live in characters/<id>.toml.
+comfy_url = "http://127.0.0.1:8188"
+characters_dir = "characters"
+assets_dir = "assets"
+workflows_dir = "workflows"
+refs_dir = "refs"
+out_dir = "out"
+timeout_seconds = 1800        # max wait for one round of queued images
+poll_seconds = 1.0
+free_vram_before_verify = true  # unload ComfyUI models so the embedder/VLM fit in 20 GB
+
+[embed]
+model = "facebook/dinov2-base"  # instance-level similarity; downloaded on first use
+device = "auto"                 # ROCm torch shows the 7900 XT as "cuda"; falls back to CPU
+top_k = 3
+
+[vlm]
+# Any OpenAI-compatible vision endpoint. Defaults to Ollama on this machine.
+# Ollama: `ollama pull qwen2.5vl:7b`. LM Studio: base_url = "http://127.0.0.1:1234/v1".
+enabled = true
+base_url = "http://127.0.0.1:11434/v1"
+model = "qwen2.5vl:7b"
+api_key = ""
+timeout_seconds = 180

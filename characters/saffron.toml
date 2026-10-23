@@ -1,0 +1,125 @@
+# Character bible: the ONLY place this character's look is defined.
+# Asset rows can change pose, expression, framing and scene, never anything below.
+
+id = "saffron"
+display_name = "Saffron"
+
+[model]
+# Everything here is identical for every image of this character.
+checkpoint = "noobaiXLNAIXL_epsilonPred11Version.safetensors"   # your SDXL checkpoint filename in ComfyUI/models/checkpoints
+clip_skip = 2
+sampler = "euler"          # deterministic sampler; *_ancestral / *_sde add noise every step and drift more
+scheduler = "normal"
+steps = 28
+cfg = 5.0
+width = 832
+height = 1216
+# ref_image = "refs/saffron/canonical.png"   # only used by workflows with a REF_IMAGE node (e.g. IPAdapter)
+
+[[model.loras]]
+name = "saffron_v1.safetensors"   # character LoRA trained on your curated set
+strength = 0.9
+
+[prompt]
+style = "masterpiece, best quality, newest, anthro, furry, solo, full body, standing"
+# Every identifying trait, in the same words, every time.
+identity = "saffron_oc, female anthro fennec fox, cream fur, white muzzle, white chest tuft, very large ears, orange inner ears, amber eyes, black nose, bushy tail with white tip"
+background = "simple background, grey background"   # default for sprites so the subject can be isolated
+negative = "worst quality, low quality, lowres, bad anatomy, extra digits, extra arms, extra tail, multiple tails, heterochromia, multicolored fur, text, watermark, signature, cropped"
+
+[outfits]
+# Named outfits; rows pick one by name. Keep every item and colour explicit.
+default = "teal crop top, black wrap skirt, black fingerless gloves, teal wristbands"
+casual = "oversized grey hoodie, denim shorts"
+
+[lint]
+# Colour words attached to these parts in a row prompt are rejected (e.g. "blue eyes").
+# locked_parts = [...]   # defaults cover eyes/fur/hair/ears/tail/skin/markings etc.
+forbidden_terms = ["heterochromia", "multicolored eyes", "red fox", "arctic fox", "spots", "stripes"]
+
+[verify]
+candidates = 4          # images per asset per attempt; the best passing one is approved
+max_attempts = 4        # rounds of fresh seeds before the asset is marked needs_review
+embed_margin = 0.03     # threshold = weakest reference's leave-one-out similarity - margin
+scene_embed_relax = 0.08
+bg_delta_e = 18.0       # how far from the flat background a pixel must be to count as subject
+min_subject_fraction = 0.05
+max_subject_fraction = 0.85
+clear_borders = ["top", "left", "right"]   # sprites must not be cropped on these edges
+# max_unmatched = 0.35  # optional: max share of subject pixels matching no palette colour
+vlm_min_pass = 1.0      # share of non-critical checklist items that must pass
+
+# Palette: measured on the isolated subject in CIELAB. `calibrate` prints what your
+# references actually contain and flags entries that would reject them.
+[[palette]]
+name = "fur"
+hex = "#E8CFA3"
+tolerance = 14
+min_fraction = 0.12
+
+[[palette]]
+name = "inner_ear"
+hex = "#E89A5C"
+tolerance = 14
+min_fraction = 0.004
+
+[[palette]]
+name = "top_teal"
+hex = "#2BB5B0"
+tolerance = 16
+min_fraction = 0.02
+outfits = ["default"]
+
+[[palette]]
+name = "wrong_red_fur"   # forbidden colour: fails if it covers more than max_fraction
+hex = "#C2462A"
+tolerance = 12
+max_fraction = 0.01
+
+# VLM checklist: graded strictly. `expect` = any acceptable answer word,
+# `reject` = answer words that fail even if an expected word is present,
+# critical = false items only need to meet vlm_min_pass.
+[[vlm]]
+id = "species"
+question = "What animal species is the character? One word."
+expect = ["fox", "fennec"]
+
+[[vlm]]
+id = "eyes"
+question = "What colour are the character's eyes?"
+expect = ["amber", "orange", "gold", "golden", "yellow"]
+reject = ["blue", "green", "red", "purple", "heterochromia", "different"]
+
+[[vlm]]
+id = "tails"
+question = "How many tails does the character have? Answer with a number."
+expect = ["1", "one"]
+
+[[vlm]]
+id = "tail_tip"
+question = "What colour is the tip of the character's tail?"
+expect = ["white", "cream"]
+critical = false
+
+[[vlm]]
+id = "fur"
+question = "What is the main colour of the character's fur?"
+expect = ["cream", "beige", "tan", "light", "pale", "sand", "sandy", "yellow", "blonde"]
+reject = ["red", "grey", "gray", "black", "brown"]
+
+[[vlm]]
+id = "gloves"
+question = "Is the character wearing black fingerless gloves? Answer yes or no."
+expect = ["yes"]
+outfits = ["default"]
+
+[[vlm]]
+id = "top"
+question = "What colour is the character's top?"
+expect = ["teal", "turquoise", "cyan", "aqua", "blue-green"]
+outfits = ["default"]
+
+[[vlm]]
+id = "extra_people"
+question = "How many characters are in the image? Answer with a number."
+expect = ["1", "one"]

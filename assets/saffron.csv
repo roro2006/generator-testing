@@ -1,0 +1,7 @@
+id,character,prompt,outfit,background,workflow,init_image,denoise,checks,candidates,notes
+saffron_neutral,saffron,"neutral expression, arms at sides, looking at viewer",default,,txt2img,,,,,base sprite: expression variants derive from this
+saffron_happy,saffron,"smiling, open mouth, looking at viewer",default,,img2img,saffron_neutral,0.45,,,same pose and lighting as the base
+saffron_angry,saffron,"angry, frown, clenched teeth, looking at viewer",default,,img2img,saffron_neutral,0.45,,,
+saffron_blush,saffron,"blush, embarrassed, looking away",default,,img2img,saffron_neutral,0.45,,,
+saffron_casual,saffron,"neutral expression, hands in pockets",casual,,txt2img,,,,,
+saffron_door_night,saffron,"standing at front door, waving, looking at viewer","default","night, porch, dim lighting, wooden door",txt2img,,,"tech,embed,vlm",6,scene shot: palette check cannot isolate the subject
